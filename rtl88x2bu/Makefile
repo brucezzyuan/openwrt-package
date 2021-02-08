@@ -8,18 +8,18 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=rtl8821cu
-PKG_RELEASE:=1
+PKG_NAME:=rtl88x2bu
+PKG_RELEASE=1
 
-PKG_SOURCE_URL:=https://github.com/brektrou/rtl8821CU.git
+PKG_SOURCE_URL:=https://github.com/cilynx/rtl88x2bu.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2020-07-27
-PKG_SOURCE_VERSION:=93b04bfcd293fdd7d98d5a7c964ae9416a40159c
-PKG_MIRROR_HASH:=e3d798355625bd71596ce08741e1f7f3523951e91be775edf2a936ab260bd5de
+PKG_SOURCE_DATE:=2020-07-21
+PKG_SOURCE_VERSION:=a2abcaf523dfab2afeda8cc2cdb5e3c9510fc5f3
+PKG_MIRROR_HASH:=26d5504c9323c9c133265f2c2e4213acca0ddf390b1b4399d1003e9fd45f9368
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINTER:=CN_SZTL <cnsztl@project-openwrt.eu.org>
+PKG_MAINTAINTER:=ElonH <elonh@project-openwrt.eu.org>
 
 PKG_BUILD_PARALLEL:=1
 
@@ -28,17 +28,13 @@ STAMP_CONFIGURED_DEPENDS := $(STAGING_DIR)/usr/include/mac80211-backport/backpor
 include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
-define KernelPackage/rtl8821cu
+define KernelPackage/rtl88x2bu
   SUBMENU:=Wireless Drivers
-  TITLE:=Realtek RTL8811CU/RTL8821CU support
+  TITLE:=Realtek 8812BU/8822BU support
   DEPENDS:=+kmod-cfg80211 +kmod-usb-core +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT
-  FILES:=$(PKG_BUILD_DIR)/rtl8821cu.ko
-  AUTOLOAD:=$(call AutoProbe,rtl8821cu)
-  PROVIDES:=kmod-rtl8821cu
-endef
-
-define KernelPackage/rtl8821cu/description
-  Realtek RTL8811CU/RTL8821CU USB Wi-Fi adapter driver.
+  FILES:=$(PKG_BUILD_DIR)/rtl88x2bu.ko
+  AUTOLOAD:=$(call AutoProbe,rtl88x2bu)
+  PROVIDES:=kmod-rtl88x2bu
 endef
 
 NOSTDINC_FLAGS = \
@@ -51,28 +47,18 @@ NOSTDINC_FLAGS = \
 	-include backport/autoconf.h \
 	-include backport/backport.h
 
-EXTRA_KCONFIG:=\
-	CONFIG_RTL8821CU=m \
-	USER_MODULE_NAME=rtl8821cu
-
-ifeq ($(ARCH),aarch64)
-	EXTRA_KCONFIG += CONFIG_MP_VHT_HW_TX_MODE=n
-endif
-
 EXTRA_CFLAGS:= \
 	-DRTW_SINGLE_WIPHY \
 	-DRTW_USE_CFG80211_STA_EVENT \
 	-DCONFIG_RADIO_WORK \
 	-DCONFIG_IOCTL_CFG80211 \
-	-DCONFIG_CONCURRENT_MODE \
+	-DCONFIG_CONCURRENT_MODE
 
-ifeq ($(ARCH),arm)
-	EXTRA_CFLAGS += -mfloat-abi=softfp
-endif
-
-ifeq ($(ARCH),x86_64)
-	EXTRA_CFLAGS += -mhard-float
-endif
+EXTRA_KCONFIG:= \
+	CONFIG_POWER_SAVING=n \
+	CONFIG_RTW_DEBUG=y \
+	CONFIG_RTL8822BU=m \
+	USER_MODULE_NAME=rtl88x2bu
 
 MAKE_OPTS:= \
 	$(KERNEL_MAKE_FLAGS) \
@@ -87,4 +73,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,rtl8821cu))
+$(eval $(call KernelPackage,rtl88x2bu))
