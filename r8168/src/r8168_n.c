@@ -46,6 +46,7 @@
 #include <linux/etherdevice.h>
 #include <linux/delay.h>
 #include <linux/mii.h>
+#include <linux/of.h>
 #include <linux/if_vlan.h>
 #include <linux/crc32.h>
 #include <linux/interrupt.h>
@@ -23978,6 +23979,22 @@ rtl8168_set_bios_setting(struct net_device *dev)
         }
 }
 
+static int rtl8168_led_configuration(struct rtl8168_private *tp)
+{
+        u32 led_data;
+        int ret;
+
+        ret = of_property_read_u32(tp->pci_dev->dev.of_node,
+                                  "realtek,led-data", &led_data);
+
+        if (ret)
+                return ret;
+
+        RTL_W16(tp, CustomLED, led_data);
+
+        return 0;
+}
+
 static void
 rtl8168_init_software_variable(struct net_device *dev)
 {
@@ -24440,6 +24457,8 @@ rtl8168_init_software_variable(struct net_device *dev)
                 tp->NotWrRamCodeToMicroP = TRUE;
                 tp->NotWrMcuPatchCode = TRUE;
         }
+
+        rtl8168_led_configuration(tp);
 
         tp->NicCustLedValue = RTL_R16(tp, CustomLED);
 
