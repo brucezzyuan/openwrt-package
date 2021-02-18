@@ -10,9 +10,10 @@ uci commit system
 uci set fstab.@global[0].anon_mount=1
 uci commit fstab
 
-#rm -f /usr/lib/lua/luci/view/admin_status/index/mwan.htm
-#rm -f /usr/lib/lua/luci/view/admin_status/index/ddns.htm
-#rm -f /usr/lib/lua/luci/view/admin_status/index/minidlna.htm
+rm -f /www/luci-static/resources/view/status/include/70_ddns.js
+rm -f /www/luci-static/resources/view/status/include/80_minidlna.js
+#rm -f /www/luci-static/resources/view/status/include/80_upnp.js
+
 uci set uhttpd.main.rfc1918_filter=0
 uci set uhttpd.main.redirect_https=0
 uci commit uhttpd
@@ -20,9 +21,11 @@ uci commit uhttpd
 #sed -i '/openwrt_luci/ { s/snapshots\/packages/releases\/packages-19.07/g; }' /etc/opkg/distfeeds.conf
 #sed -i '/openwrt_packages/ { s/snapshots\/packages/releases\/packages-19.07/g; }' /etc/opkg/distfeeds.conf
 #sed -i '/openwrt_routing/ { s/snapshots\/packages/releases\/packages-19.07/g; }' /etc/opkg/distfeeds.conf
-#sed -i '/openwrt_telephony/ { s/snapshots\/packages/releases\/packages-19.07/g; }' /etc/opkg/distfeeds.con
+#sed -i '/openwrt_telephony/ { s/snapshots\/packages/releases\/packages-19.07/g; }' /etc/opkg/distfeeds.conf
 #sed -i '/natelol/d' /etc/opkg/distfeeds.conf
 #sed -i 's,downloads.openwrt.org,mirrors.cloud.tencent.com/lede,g' /etc/opkg/distfeeds.conf
+sed -i '/addon/d' /etc/opkg/distfeeds.conf
+sed -i -re 's/^(option check_signature.*)/#\1/g' /etc/opkg.conf
 
 #sed -i '/REDIRECT --to-ports 53/d' /etc/firewall.user
 #echo "iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 53" >> /etc/firewall.user
