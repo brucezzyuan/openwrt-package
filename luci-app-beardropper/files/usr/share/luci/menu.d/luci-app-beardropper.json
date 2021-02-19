@@ -1,0 +1,12 @@
+{
+	"admin/services/beardropper": {
+		"title": "beardropper",
+		"action": {
+			"type": "view",
+			"path": "beardropper"
+		},
+		"depends": {
+			"acl": [ "luci-app-beardropper" ]
+		}
+	}
+}
