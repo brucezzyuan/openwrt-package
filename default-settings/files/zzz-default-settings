@@ -44,6 +44,7 @@ echo 'luciversion = "Quintus@🇨🇦🇹🇼🇺🇸🇭🇰"' >> /usr/lib/lua/
 #opkg flag hold firewall
 #opkg flag hold dnsmasq-full
 uci set firewall.@defaults[0].flow_offloading=1
+uci set firewall.@defaults[0].fullcone=1
 uci set ttyd.@ttyd[0].command='/bin/login'
 uci set network.globals.packet_steering='1'
 uci commit
