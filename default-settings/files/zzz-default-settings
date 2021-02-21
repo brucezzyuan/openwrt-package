@@ -39,7 +39,7 @@ rm /usr/lib/lua/luci/i18n/*cn*
 rm -rf /tmp/luci-modulecache/
 rm -f /tmp/luci-indexcache
 
-echo 'luciversion = "Quintus@🇨🇦🇹🇼🇺🇸🇭🇰"' >> /usr/lib/lua/luci/version.lua
+echo 'luciversion = "🇨🇦🇹🇼🇺🇸🇭🇰"' >> /usr/lib/lua/luci/version.lua
 #opkg flag hold luci-app-firewall
 #opkg flag hold firewall
 #opkg flag hold dnsmasq-full
