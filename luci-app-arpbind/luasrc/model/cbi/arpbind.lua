@@ -31,12 +31,17 @@ end)
 
 a = s:option(ListValue, "ifname", translate("Interface"))
 for _, iface in ipairs(ifaces) do
-	if iface ~= "lo" then 
-		a:value(iface) 
+	if iface ~= "lo" then
+		a:value(iface)
 	end
 end
 a.default = "br-lan"
 a.rmempty = false
+
+local e=luci.http.formvalue("cbi.apply")
+if e then
+  io.popen("/etc/init.d/arpbind start")
+end
 
 return m
 
