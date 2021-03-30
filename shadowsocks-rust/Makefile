@@ -11,7 +11,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadowsocks-rust
-PKG_VERSION:=1.10.1
+PKG_VERSION:=1.10.2
 PKG_RELEASE:=1
 
 PKG_SOURCE_HEADER:=shadowsocks-v$(PKG_VERSION)
@@ -22,19 +22,19 @@ PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-rust/releases/downloa
 
 ifeq ($(ARCH),aarch64)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).aarch64-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=9c3591645e753b1357fb44187af12e351f036bc2c7c83397d969d5af8783bf0a
+  PKG_HASH:=53c8d4fe5f8eb9cac7dfababd4f6250498bc2afb4167e9f0e48765b7315d7f73
 else ifeq ($(ARCH),arm)
   # Referred to golang/golang-values.mk
   ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
   ifeq ($(ARM_CPU_FEATURES),)
     PKG_SOURCE:=$(PKG_SOURCE_HEADER).arm-$(PKG_SOURCE_BODY)eabi.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=8d482c08b01937aa2e972e683c5271ffea88c515d28eb03d6c111583f7795b51
+    PKG_HASH:=2daf7104003cd9c6c6f3344f7a3f621dce201ae5f6860a047a48363ed749ea2e
   else ifneq ($(filter $(ARM_CPU_FEATURES),vfp vfpv2),)
     PKG_SOURCE:=$(PKG_SOURCE_HEADER).arm-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=a210f2d3d211c0907a61d015ea5d672122fc4c41c6ada0579ad1ceb16dccdd97
-  else
-    PKG_SOURCE:=$(PKG_SOURCE_HEADER).armv7-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=e1ed14d86b4e7f6b88da3ff5b99431a707eb7a23f0e063ada86e85e7e84a8ec1
+    PKG_HASH:=1cbf8e61e39c836cf7ad9d962ec820285f555036b6fd6f2325ed354d815b540d
+#  else
+#    PKG_SOURCE:=$(PKG_SOURCE_HEADER).armv7-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
+#    PKG_HASH:=e1ed14d86b4e7f6b88da3ff5b99431a707eb7a23f0e063ada86e85e7e84a8ec1
   endif
 #else ifeq ($(ARCH),i386)
 #  ifeq ($(CONFIG_TARGET_x86_geode)$(CONFIG_TARGET_x86_legacy),y)
@@ -52,7 +52,7 @@ else ifeq ($(ARCH),arm)
 #  PKG_HASH:=953d2feb430906edcb5ed6994510b3bded141ae8abb3b77dd6bfc80aac8740d1
 else ifeq ($(ARCH),x86_64)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).x86_64-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=a0778d2fe88a54429bf3e242f2846dae127c43d0bd4d124a0737916459c59720
+  PKG_HASH:=e3f3503e5b1c2075058fa675c47f2828f26e01a7b03e50deb28ab76a485acbfe
 # Set the default value to make OpenWrt Package Checker happy
 else
   PKG_SOURCE:=dummy
