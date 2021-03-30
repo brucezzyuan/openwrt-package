@@ -77,8 +77,8 @@ define Package/shadowsocks-rust/Default
   endef
 
   define Package/shadowsocks-rust-$(1)/install
-  $$(INSTALL_DIR) $$(1)/usr/bin
-  $$(INSTALL_BIN) $$(PKG_BUILD_DIR)/$(1) $$(1)/usr/bin
+	$$(INSTALL_DIR) $$(1)/usr/bin
+	$$(INSTALL_BIN) $$(PKG_BUILD_DIR)/$(1) $$(1)/usr/bin
   endef
 endef
 
