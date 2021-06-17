@@ -2,7 +2,7 @@
 /*
 ################################################################################
 #
-# r8168 is the Linux device driver released for Realtek Gigabit Ethernet
+# r8125 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
 # controllers with PCI-Express interface.
 #
 # Copyright(c) 2021 Realtek Semiconductor Corp. All rights reserved.
@@ -32,8 +32,10 @@
  *  US6,570,884, US6,115,776, and US6,327,625.
  ***********************************************************************************/
 
-#ifndef _LINUX_R8168_DASH_H
-#define _LINUX_R8168_DASH_H
+#ifndef _LINUX_R8125_DASH_H
+#define _LINUX_R8125_DASH_H
+
+#include <linux/if.h>
 
 #define SIOCDEVPRIVATE_RTLDASH   SIOCDEVPRIVATE+2
 
@@ -115,23 +117,25 @@ struct wakeup_pattern {
 };
 
 typedef struct _RX_DASH_FROM_FW_DESC {
-        __le16 length;
-        __le16 status;
-        __le32 resv;
-        __le64 BufferAddress;
+        u16 length;
+        u8 statusLowByte;
+        u8 statusHighByte;
+        u32 resv;
+        u64 BufferAddress;
 }
 RX_DASH_FROM_FW_DESC, *PRX_DASH_FROM_FW_DESC;
 
 typedef struct _TX_DASH_SEND_FW_DESC {
-        __le16 length;
-        __le16 status;
-        __le32 resv;
-        __le64 BufferAddress;
+        u16 length;
+        u8 statusLowByte;
+        u8 statusHighByte;
+        u32 resv;
+        u64 BufferAddress;
 }
 TX_DASH_SEND_FW_DESC, *PTX_DASH_SEND_FW_DESC;
 
 typedef struct _OSOOBHdr {
-        __le32 len;
+        u32 len;
         u8 type;
         u8 flag;
         u8 hostReqV;
@@ -171,16 +175,17 @@ RX_DASH_BUFFER_TYPE_2, *PRX_DASH_BUFFER_TYPE_2;
 #define OCP_REG_CONFIG0_DRV_WAIT_OOB     BIT_8
 #define OCP_REG_CONFIG0_TLSEN            BIT_7
 
-#define HW_DASH_SUPPORT_DASH(_M)        ((_M)->HwSuppDashVer > 0)
-#define HW_DASH_SUPPORT_TYPE_1(_M)        ((_M)->HwSuppDashVer == 1)
-#define HW_DASH_SUPPORT_TYPE_2(_M)        ((_M)->HwSuppDashVer == 2)
-#define HW_DASH_SUPPORT_TYPE_3(_M)        ((_M)->HwSuppDashVer == 3)
+#define HW_DASH_SUPPORT_DASH(_M)        ((_M)->HwSuppDashVer > 0 )
+#define HW_DASH_SUPPORT_TYPE_1(_M)        ((_M)->HwSuppDashVer == 1 )
+#define HW_DASH_SUPPORT_TYPE_2(_M)        ((_M)->HwSuppDashVer == 2 )
+#define HW_DASH_SUPPORT_TYPE_3(_M)        ((_M)->HwSuppDashVer == 3 )
 
-#define RECV_FROM_FW_BUF_SIZE (2048)
-#define SEND_TO_FW_BUF_SIZE (2048)
+#define RECV_FROM_FW_BUF_SIZE (1520)
+#define SEND_TO_FW_BUF_SIZE (1520)
 
 #define RX_DASH_FROM_FW_OWN BIT_15
 #define TX_DASH_SEND_FW_OWN BIT_15
+#define TX_DASH_SEND_FW_OWN_HIGHBYTE BIT_7
 
 #define TXS_CC3_0       (BIT_0|BIT_1|BIT_2|BIT_3)
 #define TXS_EXC         BIT_4
@@ -246,11 +251,11 @@ RX_DASH_BUFFER_TYPE_2, *PRX_DASH_BUFFER_TYPE_2;
 #define RTL_CMAC_R16(tp, reg)        readw (tp->cmac_ioaddr + (reg))
 #define RTL_CMAC_R32(tp, reg)        ((unsigned long) readl (tp->cmac_ioaddr + (reg)))
 
-int rtl8168_dash_ioctl(struct net_device *dev, struct ifreq *ifr);
+int rtl8125_dash_ioctl(struct net_device *dev, struct ifreq *ifr);
 void HandleDashInterrupt(struct net_device *dev);
 int AllocateDashShareMemory(struct net_device *dev);
 void FreeAllocatedDashShareMemory(struct net_device *dev);
 void DashHwInit(struct net_device *dev);
 
 
-#endif /* _LINUX_R8168_DASH_H */
+#endif /* _LINUX_R8125_DASH_H */

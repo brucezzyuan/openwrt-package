@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 ################################################################################
 #
-# r8168 is the Linux device driver released for Realtek Gigabit Ethernet
+# r8125 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
 # controllers with PCI-Express interface.
 #
 # Copyright(c) 2021 Realtek Semiconductor Corp. All rights reserved.
@@ -46,7 +46,7 @@ endif
 MODCFLAGS	+= -DLINUX -D__KERNEL__ -DMODULE -O2 -pipe -Wall
 MODCFLAGS	+= -I$(KSRC)/include -I.
 MODCFLAGS	+= -DMODVERSIONS -DEXPORT_SYMTAB -include $(KSRC)/include/linux/modversions.h
-SOURCE		:= r8168_n.c r8168_asf.c rtl_eeprom.c rtltool.c
+SOURCE		:= r8125_n.c rtl_eeprom.c rtltool.c
 OBJS		:= $(SOURCE:.c=.o)
 
 
@@ -62,8 +62,8 @@ ifeq ($(SMP),1)
 endif
 
 modules: $(OBJS)
-	$(LD) -r $^ -o r8168.o
-	strip --strip-debug r8168.o
+	$(LD) -r $^ -o r8125.o
+	strip --strip-debug r8125.o
 
 %.o: %.c
 	$(CC) $(MODCFLAGS) -c $< -o $@
@@ -72,4 +72,4 @@ clean:
 	rm *.o -f
 
 install:
-	install -m 744 -c r8168.o $(KMISC)
+	install -m 744 -c r8125.o $(KMISC)

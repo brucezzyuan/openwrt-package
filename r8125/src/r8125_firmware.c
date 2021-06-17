@@ -36,7 +36,7 @@
 #include <linux/delay.h>
 #include <linux/firmware.h>
 
-#include "r8168_firmware.h"
+#include "r8125_firmware.h"
 
 enum rtl_fw_opcode {
         PHY_READ		= 0x0,
@@ -56,7 +56,7 @@ enum rtl_fw_opcode {
 
 struct fw_info {
         u32	magic;
-        char	version[RTL8168_VER_SIZE];
+        char	version[RTL8125_VER_SIZE];
         __le32	fw_start;
         __le32	fw_len;
         u8	chksum;
@@ -65,13 +65,13 @@ struct fw_info {
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,16,0)
 #define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
 #endif
-#define FW_OPCODE_SIZE sizeof_field(struct rtl8168_fw_phy_action, code[0])
+#define FW_OPCODE_SIZE sizeof_field(struct rtl8125_fw_phy_action, code[0])
 
-static bool rtl8168_fw_format_ok(struct rtl8168_fw *rtl_fw)
+static bool rtl8125_fw_format_ok(struct rtl8125_fw *rtl_fw)
 {
         const struct firmware *fw = rtl_fw->fw;
         struct fw_info *fw_info = (struct fw_info *)fw->data;
-        struct rtl8168_fw_phy_action *pa = &rtl_fw->phy_action;
+        struct rtl8125_fw_phy_action *pa = &rtl_fw->phy_action;
 
         if (fw->size < FW_OPCODE_SIZE)
                 return false;
@@ -96,7 +96,7 @@ static bool rtl8168_fw_format_ok(struct rtl8168_fw *rtl_fw)
                 if (size > (fw->size - start) / FW_OPCODE_SIZE)
                         return false;
 
-                strscpy(rtl_fw->version, fw_info->version, RTL8168_VER_SIZE);
+                strscpy(rtl_fw->version, fw_info->version, RTL8125_VER_SIZE);
 
                 pa->code = (__le32 *)(fw->data + start);
                 pa->size = size;
@@ -104,7 +104,7 @@ static bool rtl8168_fw_format_ok(struct rtl8168_fw *rtl_fw)
                 if (fw->size % FW_OPCODE_SIZE)
                         return false;
 
-                strscpy(rtl_fw->version, rtl_fw->fw_name, RTL8168_VER_SIZE);
+                strscpy(rtl_fw->version, rtl_fw->fw_name, RTL8125_VER_SIZE);
 
                 pa->code = (__le32 *)fw->data;
                 pa->size = fw->size / FW_OPCODE_SIZE;
@@ -113,9 +113,9 @@ static bool rtl8168_fw_format_ok(struct rtl8168_fw *rtl_fw)
         return true;
 }
 
-static bool rtl8168_fw_data_ok(struct rtl8168_fw *rtl_fw)
+static bool rtl8125_fw_data_ok(struct rtl8125_fw *rtl_fw)
 {
-        struct rtl8168_fw_phy_action *pa = &rtl_fw->phy_action;
+        struct rtl8125_fw_phy_action *pa = &rtl_fw->phy_action;
         size_t index;
 
         for (index = 0; index < pa->size; index++) {
@@ -165,11 +165,11 @@ out:
         return false;
 }
 
-void rtl8168_fw_write_firmware(struct rtl8168_private *tp, struct rtl8168_fw *rtl_fw)
+void rtl8125_fw_write_firmware(struct rtl8125_private *tp, struct rtl8125_fw *rtl_fw)
 {
-        struct rtl8168_fw_phy_action *pa = &rtl_fw->phy_action;
-        rtl8168_fw_write_t fw_write = rtl_fw->phy_write;
-        rtl8168_fw_read_t fw_read = rtl_fw->phy_read;
+        struct rtl8125_fw_phy_action *pa = &rtl_fw->phy_action;
+        rtl8125_fw_write_t fw_write = rtl_fw->phy_write;
+        rtl8125_fw_read_t fw_read = rtl_fw->phy_read;
         int predata = 0, count = 0;
         size_t index;
 
@@ -237,12 +237,12 @@ void rtl8168_fw_write_firmware(struct rtl8168_private *tp, struct rtl8168_fw *rt
         }
 }
 
-void rtl8168_fw_release_firmware(struct rtl8168_fw *rtl_fw)
+void rtl8125_fw_release_firmware(struct rtl8125_fw *rtl_fw)
 {
         release_firmware(rtl_fw->fw);
 }
 
-int rtl8168_fw_request_firmware(struct rtl8168_fw *rtl_fw)
+int rtl8125_fw_request_firmware(struct rtl8125_fw *rtl_fw)
 {
         int rc;
 
@@ -250,7 +250,7 @@ int rtl8168_fw_request_firmware(struct rtl8168_fw *rtl_fw)
         if (rc < 0)
                 goto out;
 
-        if (!rtl8168_fw_format_ok(rtl_fw) || !rtl8168_fw_data_ok(rtl_fw)) {
+        if (!rtl8125_fw_format_ok(rtl_fw) || !rtl8125_fw_data_ok(rtl_fw)) {
                 release_firmware(rtl_fw->fw);
                 rc = -EINVAL;
                 goto out;

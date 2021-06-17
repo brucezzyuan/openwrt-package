@@ -2,7 +2,7 @@
 /*
 ################################################################################
 #
-# r8168 is the Linux device driver released for Realtek Gigabit Ethernet
+# r8125 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
 # controllers with PCI-Express interface.
 #
 # Copyright(c) 2021 Realtek Semiconductor Corp. All rights reserved.
@@ -40,11 +40,11 @@
 #include <linux/in.h>
 #include <linux/ethtool.h>
 #include <asm/uaccess.h>
-#include "r8168.h"
+#include "r8125.h"
 #include "rtl_eeprom.h"
 #include "rtltool.h"
 
-int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
+int rtl8125_tool_ioctl(struct rtl8125_private *tp, struct ifreq *ifr)
 {
         struct rtltool_cmd my_cmd;
         unsigned long flags;
@@ -98,7 +98,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                my_cmd.data = rtl8168_mdio_prot_read(tp, my_cmd.offset);
+                my_cmd.data = rtl8125_mdio_prot_read(tp, my_cmd.offset);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -113,7 +113,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_mdio_prot_write(tp, my_cmd.offset, my_cmd.data);
+                rtl8125_mdio_prot_write(tp, my_cmd.offset, my_cmd.data);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 
@@ -122,7 +122,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                my_cmd.data = rtl8168_ephy_read(tp, my_cmd.offset);
+                my_cmd.data = rtl8125_ephy_read(tp, my_cmd.offset);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -137,7 +137,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_ephy_write(tp, my_cmd.offset, my_cmd.data);
+                rtl8125_ephy_write(tp, my_cmd.offset, my_cmd.data);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 
@@ -145,7 +145,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                 my_cmd.data = 0;
                 if (my_cmd.len==1 || my_cmd.len==2 || my_cmd.len==4) {
                         spin_lock_irqsave(&tp->lock, flags);
-                        my_cmd.data = rtl8168_eri_read(tp, my_cmd.offset, my_cmd.len, ERIAR_ExGMAC);
+                        my_cmd.data = rtl8125_eri_read(tp, my_cmd.offset, my_cmd.len, ERIAR_ExGMAC);
                         spin_unlock_irqrestore(&tp->lock, flags);
                 } else {
                         ret = -EOPNOTSUPP;
@@ -168,7 +168,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
 
                 if (my_cmd.len==1 || my_cmd.len==2 || my_cmd.len==4) {
                         spin_lock_irqsave(&tp->lock, flags);
-                        rtl8168_eri_write(tp, my_cmd.offset, my_cmd.len, my_cmd.data, ERIAR_ExGMAC);
+                        rtl8125_eri_write(tp, my_cmd.offset, my_cmd.len, my_cmd.data, ERIAR_ExGMAC);
                         spin_unlock_irqrestore(&tp->lock, flags);
                 } else {
                         ret = -EOPNOTSUPP;
@@ -226,7 +226,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                my_cmd.data = rtl8168_eeprom_read_sc(tp, my_cmd.offset);
+                my_cmd.data = rtl8125_eeprom_read_sc(tp, my_cmd.offset);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -241,7 +241,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_eeprom_write_sc(tp, my_cmd.offset, my_cmd.data);
+                rtl8125_eeprom_write_sc(tp, my_cmd.offset, my_cmd.data);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 
@@ -250,9 +250,9 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_oob_mutex_lock(tp);
-                my_cmd.data = rtl8168_ocp_read(tp, my_cmd.offset, 4);
-                rtl8168_oob_mutex_unlock(tp);
+                rtl8125_oob_mutex_lock(tp);
+                my_cmd.data = rtl8125_ocp_read(tp, my_cmd.offset, 4);
+                rtl8125_oob_mutex_unlock(tp);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -269,9 +269,9 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EOPNOTSUPP;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_oob_mutex_lock(tp);
-                rtl8168_ocp_write(tp, my_cmd.offset, my_cmd.len, my_cmd.data);
-                rtl8168_oob_mutex_unlock(tp);
+                rtl8125_oob_mutex_lock(tp);
+                rtl8125_ocp_write(tp, my_cmd.offset, my_cmd.len, my_cmd.data);
+                rtl8125_oob_mutex_unlock(tp);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 
@@ -305,7 +305,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EOPNOTSUPP;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                my_cmd.data = rtl8168_mac_ocp_read(tp, my_cmd.offset);
+                my_cmd.data = rtl8125_mac_ocp_read(tp, my_cmd.offset);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -322,7 +322,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EOPNOTSUPP;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_mac_ocp_write(tp, my_cmd.offset, (u16)my_cmd.data);
+                rtl8125_mac_ocp_write(tp, my_cmd.offset, (u16)my_cmd.data);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 
@@ -331,7 +331,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                my_cmd.data = rtl8168_mdio_prot_direct_read_phy_ocp(tp, my_cmd.offset);
+                my_cmd.data = rtl8125_mdio_prot_direct_read_phy_ocp(tp, my_cmd.offset);
                 spin_unlock_irqrestore(&tp->lock, flags);
 
                 if (copy_to_user(ifr->ifr_data, &my_cmd, sizeof(my_cmd))) {
@@ -346,7 +346,7 @@ int rtl8168_tool_ioctl(struct rtl8168_private *tp, struct ifreq *ifr)
                         return -EPERM;
 
                 spin_lock_irqsave(&tp->lock, flags);
-                rtl8168_mdio_prot_direct_write_phy_ocp(tp, my_cmd.offset, my_cmd.data);
+                rtl8125_mdio_prot_direct_write_phy_ocp(tp, my_cmd.offset, my_cmd.data);
                 spin_unlock_irqrestore(&tp->lock, flags);
                 break;
 

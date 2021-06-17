@@ -2,7 +2,7 @@
 /*
 ################################################################################
 #
-# r8168 is the Linux device driver released for Realtek Gigabit Ethernet
+# r8125 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
 # controllers with PCI-Express interface.
 #
 # Copyright(c) 2021 Realtek Semiconductor Corp. All rights reserved.
@@ -41,16 +41,13 @@
 
 #define RTL_CLOCK_RATE  3
 
-void rtl8168_eeprom_type(struct rtl8168_private *tp);
-void rtl8168_eeprom_cleanup(struct rtl8168_private *tp);
-u16 rtl8168_eeprom_read_sc(struct rtl8168_private *tp, u16 reg);
-void rtl8168_eeprom_write_sc(struct rtl8168_private *tp, u16 reg, u16 data);
-void rtl8168_shift_out_bits(struct rtl8168_private *tp, int data, int count);
-u16 rtl8168_shift_in_bits(struct rtl8168_private *tp);
-void rtl8168_raise_clock(struct rtl8168_private *tp, u8 *x);
-void rtl8168_lower_clock(struct rtl8168_private *tp, u8 *x);
-void rtl8168_stand_by(struct rtl8168_private *tp);
-void rtl8168_set_eeprom_sel_low(struct rtl8168_private *tp);
-
-
-
+void rtl8125_eeprom_type(struct rtl8125_private *tp);
+void rtl8125_eeprom_cleanup(struct rtl8125_private *tp);
+u16 rtl8125_eeprom_read_sc(struct rtl8125_private *tp, u16 reg);
+void rtl8125_eeprom_write_sc(struct rtl8125_private *tp, u16 reg, u16 data);
+void rtl8125_shift_out_bits(struct rtl8125_private *tp, int data, int count);
+u16 rtl8125_shift_in_bits(struct rtl8125_private *tp);
+void rtl8125_raise_clock(struct rtl8125_private *tp, u8 *x);
+void rtl8125_lower_clock(struct rtl8125_private *tp, u8 *x);
+void rtl8125_stand_by(struct rtl8125_private *tp);
+void rtl8125_set_eeprom_sel_low(struct rtl8125_private *tp);

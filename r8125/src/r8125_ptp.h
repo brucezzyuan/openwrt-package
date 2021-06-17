@@ -2,7 +2,7 @@
 /*
 ################################################################################
 #
-# r8168 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
+# r8125 is the Linux device driver released for Realtek 2.5Gigabit Ethernet
 # controllers with PCI-Express interface.
 #
 # Copyright(c) 2021 Realtek Semiconductor Corp. All rights reserved.
@@ -32,37 +32,50 @@
  *  US6,570,884, US6,115,776, and US6,327,625.
  ***********************************************************************************/
 
-#ifndef _LINUX_RTL8168_FIRMWARE_H
-#define _LINUX_RTL8168_FIRMWARE_H
+#ifndef _LINUX_rtl8125_PTP_H
+#define _LINUX_rtl8125_PTP_H
 
-#include <linux/device.h>
-#include <linux/firmware.h>
+#include <linux/ktime.h>
+#include <linux/timecounter.h>
+#include <linux/net_tstamp.h>
+#include <linux/ptp_clock_kernel.h>
+#include <linux/ptp_classify.h>
 
-struct rtl8168_private;
-typedef void (*rtl8168_fw_write_t)(struct rtl8168_private *tp, u16 reg, u16 val);
-typedef u32 (*rtl8168_fw_read_t)(struct rtl8168_private *tp, u16 reg);
-
-#define RTL8168_VER_SIZE		32
-
-struct rtl8168_fw {
-        rtl8168_fw_write_t phy_write;
-        rtl8168_fw_read_t phy_read;
-        rtl8168_fw_write_t mac_mcu_write;
-        rtl8168_fw_read_t mac_mcu_read;
-        const struct firmware *fw;
-        const char *fw_name;
-        struct device *dev;
-
-        char version[RTL8168_VER_SIZE];
-
-        struct rtl8168_fw_phy_action {
-                __le32 *code;
-                size_t size;
-        } phy_action;
+struct rtl8125_ptp_info {
+        s64 time_sec;
+        u32 time_ns;
+        u16 ts_info;
 };
 
-int rtl8168_fw_request_firmware(struct rtl8168_fw *rtl_fw);
-void rtl8168_fw_release_firmware(struct rtl8168_fw *rtl_fw);
-void rtl8168_fw_write_firmware(struct rtl8168_private *tp, struct rtl8168_fw *rtl_fw);
+#ifndef _STRUCT_TIMESPEC
+#define _STRUCT_TIMESPEC
+struct timespec {
+        __kernel_old_time_t tv_sec;     /* seconds */
+        long            tv_nsec;    /* nanoseconds */
+};
+#endif
 
-#endif /* _LINUX_RTL8168_FIRMWARE_H */
+enum PTP_CMD_TYPE {
+        PTP_CMD_SET_LOCAL_TIME = 0,
+        PTP_CMD_DRIFT_LOCAL_TIME,
+        PTP_CMD_LATCHED_LOCAL_TIME,
+};
+
+
+struct rtl8125_private;
+struct RxDescV3;
+
+int rtl8125_get_ts_info(struct net_device *netdev,
+                        struct ethtool_ts_info *info);
+
+void rtl8125_ptp_reset(struct rtl8125_private *tp);
+void rtl8125_ptp_init(struct rtl8125_private *tp);
+void rtl8125_ptp_suspend(struct rtl8125_private *tp);
+void rtl8125_ptp_stop(struct rtl8125_private *tp);
+
+int rtl8125_ptp_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd);
+
+void rtl8125_rx_ptp_pktstamp(struct rtl8125_private *tp, struct sk_buff *skb,
+                             struct RxDescV3 *descv3);
+
+#endif /* _LINUX_rtl8125_PTP_H */
