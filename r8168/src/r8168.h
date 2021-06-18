@@ -340,7 +340,7 @@ do { \
 #define DASH_SUFFIX ""
 #endif
 
-#define RTL8168_VERSION "8.049.00" NAPI_SUFFIX FIBER_SUFFIX REALWOW_SUFFIX DASH_SUFFIX
+#define RTL8168_VERSION "8.049.01" NAPI_SUFFIX FIBER_SUFFIX REALWOW_SUFFIX DASH_SUFFIX
 #define MODULENAME "r8168"
 #define PFX MODULENAME ": "
 
@@ -1597,7 +1597,9 @@ struct rtl8168_private {
 
         u8 random_mac;
 
+        u16 phy_reg_aner;
         u16 phy_reg_anlpar;
+        u16 phy_reg_gbsr;
 
         u32 HwPcieSNOffset;
 
